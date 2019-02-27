@@ -22,16 +22,33 @@ function compileGrammar(sourceCode) {
     return module.exports;
 }
 
+function MapcssParser(grammar) {
+  this.grammar = grammar;
+}
+
+MapcssParser.prototype.parse = function(text) {
+  const parser = new nearley.Parser(nearley.Grammar.fromCompiled(this.grammar));
+
+  parser.feed(text.trim());
+
+  if (!parser.results) {
+    throw "Unexpected end of file"
+  }
+
+  if (parser.results.length != 1) {
+    throw "Ambiguous grammar"
+  }
+
+  return parser.results[0];
+}
+
 module.exports = new Promise(function(resolve, reject){
     fs.readFile("mapcss.ne", {}, function (err, data) {
       if (err) {
-          return reject(err);
-        }
-        var grammar = compileGrammar(data);
-        var parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-        resolve(function (text) {
-          parser.feed(text.trim());
-          return parser.results;
-        });
+        return reject(err);
+      }
+
+      const grammar = compileGrammar(data);
+      resolve(new MapcssParser(grammar));
     });
 });

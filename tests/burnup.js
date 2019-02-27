@@ -1,10 +1,15 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const grammar = require('../mapcss');
+const pg = require('../mapcss-parser')
 
-describe("Grammar", () =>
+var parser;
+describe("Grammar", () => {
+  before(async function() {
+    parser = await pg;
+  });
+
   it("should be exported", () =>
-    expect(grammar).to.exist
+    expect(parser).to.exist
   )
-);
+});
