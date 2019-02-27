@@ -1,0 +1,23 @@
+// Simple rule
+node {
+}
+
+// Multiple Rules
+way {
+}
+node {
+}
+
+// Multiple Selectors
+node, way, relation {
+}
+
+// Special selectors
+area,
+line,
+canvas,
+* {}
+
+// Nested selectors
+node way relation {
+}
