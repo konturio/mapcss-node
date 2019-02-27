@@ -19,5 +19,5 @@ canvas,
 * {}
 
 // Nested selectors
-node way relation {
+relation way node {
 }

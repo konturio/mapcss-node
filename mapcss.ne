@@ -7,22 +7,23 @@ rule -> selectors _ action _ {% ([s, _1, a, _2]) => ({selectors: s, actions: a})
 
 selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
-           | nest
+           | nested_selector
 
-selector -> subject {% ([subject]) => ({subject: subject}) %}
-
-nest -> selector __ selector
-      | nest __ selector
- # selector -> subject (_ zoom):? (_ criteria):? (_ subpart):? (_ within):? {%
- #  ([[subject], zoom, criteria, subpart, within]) => ({
- #      subject: subject,
- #      zoom: zoom,
- #      criteria: criteria,
- #      subpart: subpart,
- #      within: within
- #  }) %}
+selector -> subject zoom:? (_ criteria):? (_ subpart):? (_ within):? {%
+  ([[subject], zoom, criteria, subpart, within]) => ({
+      subject: subject,
+      zoom: zoom,
+      criteria: criteria,
+      subpart: subpart,
+      within: within
+  })
+%}
 #           | selector __ selector {% id %}
 #           | selector _ ">" _ selector
+
+nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
+      | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
+
 
 subpart -> "::" _ string {% ([_1, _2, value]) => value %}
 
@@ -56,8 +57,12 @@ subject -> "way"
 
 value -> "\"" string "\"" {% id %}
 
-zoom -> "|" _ ("z"|"s") _ unsigned_int:? _ ("-" _ unsigned_int):? {% ([pipe, _0, type, _1, begin, _2, end]) => {
-	return [type[0], begin, (end != null ? end[2] : null)];
-}%}
+zoom -> _ "|" [zs] zoom_interval {% ([_, pipe, type, value]) => {
+	value.type = type;
+	return value
+} %}
+
+zoom_interval -> unsigned_int {% ([value]) => ({begin: value, end: value})%}
+	  		   | unsigned_int:? "-" unsigned_int:? {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
 
 string -> [a-fA-F0-9\-]:+ {% ([arr]) => arr.join("") %}

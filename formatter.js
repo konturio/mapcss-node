@@ -12,7 +12,29 @@ function formatSelectors(selectors) {
 }
 
 function formatSelector(selector) {
-  return selector.subject
+  var result = "";
+  if (selector.parent) {
+    result += formatSelector(selector.parent) + " "
+  }
+
+  if (selector.subject) {
+    result += selector.subject;
+  }
+
+  if (selector.zoom) {
+    result += "|" + selector.zoom.type;
+    if (selector.zoom.begin) {
+      result += selector.zoom.begin;
+    }
+    if (selector.zoom.begin != selector.zoom.end) {
+      result += '-';
+      if (selector.zoom.end) {
+        result += selector.zoom.end;
+      }
+    }
+  }
+
+  return result;
 }
 
 

@@ -1,0 +1,11 @@
+// Zoom range
+way|z1-18 {}
+
+// Zoom range open lower boundary
+way|z-18 {}
+
+// Zoom range open upper boundary
+way|z1- {}
+
+// Zoom exact value
+way|z10 {}

@@ -32,9 +32,15 @@ async function runSuite(file) {
     const pg = require('./mapcss-parser');
     const parser = await pg;
 
-    compareIgnoreSpace(desc, test, format(parser.parse(test)));
-    //console.log(desc, test)
-    //break
+    try {
+      const ast = parser.parse(test);
+      const res = format(ast);
+      compareIgnoreSpace(desc, test, res);
+    } catch (ex) {
+      console.log(("FAILED: " + desc).red)
+      console.log(ex);
+    }
+    //console.log(JSON.stringify(ast, 2, 2))
   }
 }
 
@@ -42,7 +48,7 @@ function compareIgnoreSpace(test, expected, actual) {
   if (expected.replace(/\s*/g, "").trim() == actual.replace(/\s*/g, "").trim()) {
     console.log(("OK: " + test).green)
   } else {
-    console.log("FAILED: " + test)
+    console.log(("FAILED: " + test).red)
     var d = diff.diffWords(expected, actual);
     d.forEach(function(part) {
       // green for additions, red for deletions
