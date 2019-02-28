@@ -1,0 +1,7 @@
+// Pseudoclass selector
+way:area {
+}
+
+// Multiple pseudoclasses
+way :hover :active {
+}

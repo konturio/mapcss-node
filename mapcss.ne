@@ -10,11 +10,12 @@ selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
            | nested_selector
 
-selector -> type zoom:? attributes:? (_ subpart):? (_ within):? {%
-  ([type, zoom, attributes, subpart, within]) => ({
+selector -> type zoom:? attributes:? pseudoclasses:? (_ subpart):? (_ within):? {%
+  ([type, zoom, attributes, pseudoclasses, subpart, within]) => ({
       type: type,
       zoom: zoom,
       attributes: attributes,
+      pseudoclasses: pseudoclasses,
       subpart: subpart,
       within: within
   })
@@ -23,10 +24,12 @@ selector -> type zoom:? attributes:? (_ subpart):? (_ within):? {%
 nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
       | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
 
+pseudoclasses   -> pseudoclass:+ {% id %}
+pseudoclass     -> _ ":" string               {% ([_1, _2, pseudoclass]) => pseudoclass %}
 
-subpart -> "::" _ string {% ([_1, _2, value]) => value %}
+#subpart -> "::" _ string {% ([_1, _2, value]) => value %}
 
-within -> ">" selector
+#within -> ">" selector
 
 # Attributes selector
 
@@ -59,7 +62,6 @@ regexp          -> "/" + [^/]:* + "/"
 #
 # class -> "." string {% id %}
 #
-# pseudoclass -> "::" string {% id %}
 
 #condition -> identifier _ sign _ identifier
 

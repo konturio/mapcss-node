@@ -38,7 +38,15 @@ function formatSelector(selector) {
     result += selector.attributes.map(formatAttribute).join("")
   }
 
+  if (selector.pseudoclasses) {
+    result += selector.pseudoclasses.map(formatPseudoclass).join("");
+  }
+
   return result;
+}
+
+function formatPseudoclass(pseudoclass) {
+  return ":" + pseudoclass;
 }
 
 function formatAttribute(attribute) {
