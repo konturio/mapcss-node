@@ -37,15 +37,22 @@ attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => p
 predicate       -> tag                        {% ([tag]) => ({type: "presence", key: tag}) %}
                  | tag operator value         {% ([tag, op, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
                  | "!" tag                    {% ([_, tag]) => ({type: "absence", key: tag}) %}
+                 | tag "~=" regexp            {% ([tag, op, value]) => ({type: "regex", key: tag, value: value, op: op}) %}
 
-tag             -> string {% id %}
-value           -> string {% id %}
+tag             -> string                     {% id %}
+value           -> string                     {% id %}
 
-string          -> dqstring {% id %}
-                 | [a-zA-Z0-9:_]:+ {% ([chars]) => chars.join("") %}
+string          -> dqstring                   {% id %}
+                 | [a-zA-Z0-9:_]:+            {% ([chars]) => chars.join("") %}
 
-operator        -> "=" {% id %}
-                 | "!=" {% id %}
+operator        -> "="                        {% id %}
+                 | "!="                       {% id %}
+                 | "<"                        {% id %}
+                 | "<="                       {% id %}
+                 | ">"                        {% id %}
+                 | ">="                       {% id %}
+
+regexp          -> "/" + [^/]:* + "/"
 
 #           | class
 #           | pseudoclass
@@ -80,5 +87,3 @@ zoom -> _ "|" [zs] zoom_interval {% ([_, pipe, type, value]) => {
 
 zoom_interval -> unsigned_int {% ([value]) => ({begin: value, end: value})%}
 	  		   | unsigned_int:? "-" unsigned_int:? {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
-
-string -> [a-fA-F0-9\-]:+ {% ([arr]) => arr.join("") %}

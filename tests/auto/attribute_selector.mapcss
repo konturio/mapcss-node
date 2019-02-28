@@ -29,3 +29,21 @@ way["highway street"] {
 // Combination of attributes
 way[highway=track][!lit] {
 }
+
+// Tag value not equals
+way[tunnel!=yes] {}
+
+// Tag value lesser
+way[population<10000] {}
+
+// Tag value lesser or equals
+way[population<=10000] {}
+
+// Tag value greater
+way[population>10000] {}
+
+// Tag value greater or equals
+way[population>=10000] {}
+
+// Tag value regex match
+way[name~=/^Start/] {}

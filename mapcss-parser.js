@@ -36,7 +36,7 @@ MapcssParser.prototype.parse = function(text) {
   }
 
   if (parser.results.length != 1) {
-    throw "Ambiguous grammar"
+    throw "Ambiguous grammar: " + JSON.stringify(parser.results, 2, 2)
   }
 
   return parser.results[0];

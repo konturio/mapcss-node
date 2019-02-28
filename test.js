@@ -40,7 +40,7 @@ async function runSuite(file) {
       console.log(("FAILED: " + desc).red)
       console.log(ex);
     }
-    //console.log(JSON.stringify(ast, 2, 2))
+    //
   }
 }
 
