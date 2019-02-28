@@ -49,7 +49,7 @@ function formatAttribute(attribute) {
   } else if (attribute.type == "cmp") {
     return "[" + formatAttributeTag(attribute.key) + attribute.op + formatAttributeValue(attribute.value) + "]";
   } else if (attribute.type == "regexp") {
-    return "[" + formatAttributeTag(attribute.key) + attribute.op + "/" + attribute.value + "/]";
+    return "[" + formatAttributeTag(attribute.key) + attribute.op + "/" + attribute.value.regexp + "/" + attribute.value.flags + "]";
   }
 
   throw "unexpected check: " + JSON.stringify(attribute);

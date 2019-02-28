@@ -57,10 +57,15 @@ operator        -> "="                        {% id %}
                  | ">"                        {% id %}
                  | ">="                       {% id %}
 
-regexp          -> "/" regexp_char:* "/"      {% ([_1, arr, _2]) => arr.join("") %}
+regexp          -> "/" regexp_char:* "/" regexp_flag:*       {% ([_1, arr, _2, flags]) => ({regexp: arr.join(""), flags: flags.join("")}) %}
 
 regexp_char     -> [^/]
                  | "\/"
+
+regexp_flag     -> "i" {%id%}
+                 | "g" {%id%}
+                 | "m" {%id%}
+
 #           | class
 #           | pseudoclass
 #

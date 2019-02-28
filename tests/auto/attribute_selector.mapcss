@@ -46,4 +46,4 @@ way[population>10000] {}
 way[population>=10000] {}
 
 // Tag value regex match
-way[name~=/^(St\/?art).*$/] {}
+way[name~=/^(St\/?art).*$/i] {}
