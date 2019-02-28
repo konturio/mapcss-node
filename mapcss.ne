@@ -10,14 +10,13 @@ selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
            | nested_selector
 
-selector -> type zoom:? attributes:? pseudoclasses:? (_ subpart):? (_ within):? {%
-  ([type, zoom, attributes, pseudoclasses, subpart, within]) => ({
+selector -> type zoom:? attributes:? pseudoclasses:? layer:? {%
+  ([type, zoom, attributes, pseudoclasses, layer]) => ({
       type: type,
       zoom: zoom,
       attributes: attributes,
       pseudoclasses: pseudoclasses,
-      subpart: subpart,
-      within: within
+      layer: layer
   })
 %}
 
@@ -25,8 +24,9 @@ nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent
       | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
 
 pseudoclasses   -> pseudoclass:+ {% id %}
-pseudoclass     -> _ ":" string               {% ([_1, _2, pseudoclass]) => pseudoclass %}
+pseudoclass     -> _ ":" term                 {% ([_1, _2, pseudoclass]) => pseudoclass %}
 
+layer           -> _ "::" term                {% ([_1, _2, value]) => value %}
 #subpart -> "::" _ string {% ([_1, _2, value]) => value %}
 
 #within -> ">" selector
@@ -47,6 +47,8 @@ value           -> string                     {% id %}
 
 string          -> dqstring                   {% id %}
                  | [a-zA-Z0-9:_]:+            {% ([chars]) => chars.join("") %}
+
+term            -> [a-zA-Z0-9_]:+            {% ([chars]) => chars.join("") %}
 
 operator        -> "="                        {% id %}
                  | "!="                       {% id %}
