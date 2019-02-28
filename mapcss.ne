@@ -1,5 +1,6 @@
 @builtin "whitespace.ne"
 @builtin "number.ne"
+@builtin "string.ne"
 
 css -> rule:* {% id %}
 
@@ -9,17 +10,15 @@ selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
            | nested_selector
 
-selector -> subject zoom:? (_ criteria):? (_ subpart):? (_ within):? {%
-  ([[subject], zoom, criteria, subpart, within]) => ({
-      subject: subject,
+selector -> type zoom:? attributes:? (_ subpart):? (_ within):? {%
+  ([type, zoom, attributes, subpart, within]) => ({
+      type: type,
       zoom: zoom,
-      criteria: criteria,
+      attributes: attributes,
       subpart: subpart,
       within: within
   })
 %}
-#           | selector __ selector {% id %}
-#           | selector _ ">" _ selector
 
 nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
       | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
@@ -29,15 +28,33 @@ subpart -> "::" _ string {% ([_1, _2, value]) => value %}
 
 within -> ">" selector
 
-criteria  -> "[" condition "]"
-          | class
-          | pseudoclass
+# Attributes selector
 
-class -> "." string {% id %}
+attributes      -> attribute:+                {% id %}
 
-pseudoclass -> "::" string {% id %}
+attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => predicates %}
 
-condition -> identifier _ sign _ identifier
+predicate       -> tag                        {% ([tag]) => ({type: "presence", key: tag}) %}
+                 | tag operator value         {% ([tag, op, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
+                 | "!" tag                    {% ([_, tag]) => ({type: "absence", key: tag}) %}
+
+tag             -> string {% id %}
+value           -> string {% id %}
+
+string          -> dqstring {% id %}
+                 | [a-zA-Z0-9:_]:+ {% ([chars]) => chars.join("") %}
+
+operator        -> "=" {% id %}
+                 | "!=" {% id %}
+
+#           | class
+#           | pseudoclass
+#
+# class -> "." string {% id %}
+#
+# pseudoclass -> "::" string {% id %}
+
+#condition -> identifier _ sign _ identifier
 
 action -> "{" _ statement:+ _ "}" {% ([_1, _2, statements, _3, _4]) => (statements) %}
         | "{" _ "}" {% () => [] %}
@@ -46,14 +63,13 @@ action -> "{" _ statement:+ _ "}" {% ([_1, _2, statements, _3, _4]) => (statemen
 
 statement -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({k: key, v: value}) %}
 
-
-subject -> "way"
-         | "node"
-         | "relation"
-         | "area"
-         | "line"
-         | "canvas"
-         | "*"
+type    -> "way"      {% id %}
+         | "node"     {% id %}
+         | "relation" {% id %}
+         | "area"     {% id %}
+         | "line"     {% id %}
+         | "canvas"   {% id %}
+         | "*"        {% id %}
 
 value -> "\"" string "\"" {% id %}
 

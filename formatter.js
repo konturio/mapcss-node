@@ -17,8 +17,8 @@ function formatSelector(selector) {
     result += formatSelector(selector.parent) + " "
   }
 
-  if (selector.subject) {
-    result += selector.subject;
+  if (selector.type) {
+    result += selector.type;
   }
 
   if (selector.zoom) {
@@ -34,9 +34,40 @@ function formatSelector(selector) {
     }
   }
 
+  if (selector.attributes) {
+    result += selector.attributes.map(formatAttribute).join("")
+  }
+
   return result;
 }
 
+function formatAttribute(attribute) {
+  if (attribute.type == "presence") {
+    return "[" + formatAttributeTag(attribute.key) + "]";
+  } else if (attribute.type == "absence") {
+    return "[!" + formatAttributeTag(attribute.key) + "]";
+  } else if (attribute.type == "cmp") {
+    return "[" + formatAttributeTag(attribute.key) + attribute.op + formatAttributeValue(attribute.value) + "]";
+  }
+
+  throw "unexpected check: " + JSON.stringify(attribute);
+}
+
+function formatAttributeTag(tag) {
+  if (tag.match(/^[a-zA-Z0-9:_]*$/)) {
+    return tag;
+  }
+
+  return JSON.stringify(tag)
+}
+
+function formatAttributeValue(value) {
+  if (value.match(/^[a-zA-Z0-9:_]*$/)) {
+    return value;
+  }
+
+  return JSON.stringify(value)
+}
 
 function formatActions(actions) {
   return "";

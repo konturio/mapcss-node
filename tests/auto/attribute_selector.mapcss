@@ -1,0 +1,31 @@
+// Exact tag value
+way[highway=residential] {
+}
+
+// Tag presence
+way[shop] {
+}
+
+// Tag absence
+way[!shop] {
+}
+
+// Underscore in tag name
+node[opening_hours] {
+}
+
+// Quoted tag value
+node[name="\"Sunrise\" hotel"] {
+}
+
+// Colon in tag name without quotes
+way[addr:street] {
+}
+
+// Quoted tag name
+way["highway street"] {
+}
+
+// Combination of attributes
+way[highway=track][!lit] {
+}
