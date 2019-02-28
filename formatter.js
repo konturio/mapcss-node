@@ -48,6 +48,8 @@ function formatAttribute(attribute) {
     return "[!" + formatAttributeTag(attribute.key) + "]";
   } else if (attribute.type == "cmp") {
     return "[" + formatAttributeTag(attribute.key) + attribute.op + formatAttributeValue(attribute.value) + "]";
+  } else if (attribute.type == "regexp") {
+    return "[" + formatAttributeTag(attribute.key) + attribute.op + "/" + attribute.value + "/]";
   }
 
   throw "unexpected check: " + JSON.stringify(attribute);

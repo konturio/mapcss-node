@@ -2,6 +2,11 @@
 @builtin "number.ne"
 @builtin "string.ne"
 
+@{%
+//  const tokenPrint = { literal: "print" };
+  const tokenRegex = { test: x => x.match(/\/.*\//) };
+%}
+
 css -> rule:* {% id %}
 
 rule -> selectors _ action _ {% ([s, _1, a, _2]) => ({selectors: s, actions: a}) %}
@@ -37,7 +42,7 @@ attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => p
 predicate       -> tag                        {% ([tag]) => ({type: "presence", key: tag}) %}
                  | tag operator value         {% ([tag, op, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
                  | "!" tag                    {% ([_, tag]) => ({type: "absence", key: tag}) %}
-                 | tag "~=" regexp            {% ([tag, op, value]) => ({type: "regex", key: tag, value: value, op: op}) %}
+                 | tag "~=" regexp            {% ([tag, op, value]) => ({type: "regexp", key: tag, value: value, op: op}) %}
 
 tag             -> string                     {% id %}
 value           -> string                     {% id %}
@@ -52,8 +57,10 @@ operator        -> "="                        {% id %}
                  | ">"                        {% id %}
                  | ">="                       {% id %}
 
-regexp          -> "/" + [^/]:* + "/"
+regexp          -> "/" regexp_char:* "/"      {% ([_1, arr, _2]) => arr.join("") %}
 
+regexp_char     -> [^/]
+                 | "\/"
 #           | class
 #           | pseudoclass
 #
