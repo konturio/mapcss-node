@@ -51,7 +51,7 @@ tag             -> string                     {% id %}
 value           -> string                     {% id %}
 
 string          -> dqstring                   {% id %}
-                 | [a-zA-Z0-9:_]:+            {% ([chars]) => chars.join("") %}
+                 | [a-zA-Z0-9:_-]:+            {% ([chars]) => chars.join("") %}
 
 term            -> [a-zA-Z0-9_]:+            {% ([chars]) => chars.join("") %}
 
@@ -79,8 +79,8 @@ regexp_flag     -> "i" {%id%}
 
 #condition -> identifier _ sign _ identifier
 
-action -> "{" _ statement:+ _ "}" {% ([_1, _2, statements, _3, _4]) => (statements) %}
-        | "{" _ "}" {% () => [] %}
+action          -> "{" _ statement:+ _ "}"    {% ([_1, _2, statements, _3, _4]) => (statements) %}
+                 | "{" _ "}"                  {% () => [] %}
 
 #statements -> statement:* {% id %}
 

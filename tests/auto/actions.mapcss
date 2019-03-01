@@ -1,0 +1,9 @@
+//Simple actions
+way {
+  width: 1;
+}
+
+//Multiple actions
+way {
+  casing-width: 1; 
+}

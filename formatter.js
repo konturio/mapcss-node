@@ -22,16 +22,7 @@ function formatSelector(selector) {
   }
 
   if (selector.zoom) {
-    result += "|" + selector.zoom.type;
-    if (selector.zoom.begin) {
-      result += selector.zoom.begin;
-    }
-    if (selector.zoom.begin != selector.zoom.end) {
-      result += '-';
-      if (selector.zoom.end) {
-        result += selector.zoom.end;
-      }
-    }
+    result += formatZoom(selector.zoom);
   }
 
   if (selector.attributes) {
@@ -53,18 +44,34 @@ function formatPseudoclass(pseudoclass) {
   return ":" + pseudoclass;
 }
 
-function formatAttribute(attribute) {
-  if (attribute.type == "presence") {
-    return "[" + formatAttributeTag(attribute.key) + "]";
-  } else if (attribute.type == "absence") {
-    return "[!" + formatAttributeTag(attribute.key) + "]";
-  } else if (attribute.type == "cmp") {
-    return "[" + formatAttributeTag(attribute.key) + attribute.op + formatAttributeValue(attribute.value) + "]";
-  } else if (attribute.type == "regexp") {
-    return "[" + formatAttributeTag(attribute.key) + attribute.op + "/" + attribute.value.regexp + "/" + attribute.value.flags + "]";
+function formatZoom(zoom) {
+  var str = "|" + zoom.type;
+  if (zoom.begin) {
+    str += zoom.begin;
+  }
+  if (zoom.begin != zoom.end) {
+    str += '-';
+    if (zoom.end) {
+      str += zoom.end;
+    }
   }
 
-  throw "unexpected check: " + JSON.stringify(attribute);
+  return str;
+}
+
+function formatAttribute(attribute) {
+  switch (attribute.type) {
+    case "presence":
+      return "[" + formatAttributeTag(attribute.key) + "]";
+    case "absence":
+      return "[!" + formatAttributeTag(attribute.key) + "]";
+    case "cmp":
+      return "[" + formatAttributeTag(attribute.key) + attribute.op + formatAttributeValue(attribute.value) + "]";
+    case "regexp":
+      return "[" + formatAttributeTag(attribute.key) + attribute.op + "/" + attribute.value.regexp + "/" + attribute.value.flags + "]";
+    default:
+      throw "unexpected check: " + JSON.stringify(attribute);
+  }
 }
 
 function formatAttributeTag(tag) {
@@ -84,7 +91,11 @@ function formatAttributeValue(value) {
 }
 
 function formatActions(actions) {
-  return "";
+  return actions.map(formatAction).join("\n");
+}
+
+function formatAction(action) {
+  return action.k + ": " + action.v + ";";
 }
 
 module.exports = {
