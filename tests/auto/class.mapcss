@@ -1,0 +1,8 @@
+// Set class action
+way {
+    set .minor_road;
+}
+
+//Class selector
+way .minor_road {
+}

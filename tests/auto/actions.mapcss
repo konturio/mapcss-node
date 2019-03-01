@@ -5,5 +5,26 @@ way {
 
 //Multiple actions
 way {
-  casing-width: 1; 
+  width: 1;
+  casing-width: 1;
+}
+
+//Multiple statement in two blocks
+way {
+    color: #999;
+    width: 5px;
+}
+{
+    color: #fff;
+    width: 4px;
+}
+
+// Unquoted font name
+way {
+    font-family: DejaVu Serif Italic;
+}
+
+// Colon in tag name
+way {
+    text: addr:housenumber;
 }

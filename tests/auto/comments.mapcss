@@ -1,0 +1,9 @@
+/* Comment */
+/* Multiline
+   Comment
+*/
+way /* Comment */
+{
+/* Comment */
+    exit; /* Comment */
+}
