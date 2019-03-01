@@ -38,7 +38,19 @@ function formatSelector(selector) {
     result += selector.attributes.map(formatAttribute).join("")
   }
 
+  if (selector.pseudoclasses) {
+    result += selector.pseudoclasses.map(formatPseudoclass).join("");
+  }
+
+  if (selector.layer) {
+    result += "::" + selector.layer;
+  }
+
   return result;
+}
+
+function formatPseudoclass(pseudoclass) {
+  return ":" + pseudoclass;
 }
 
 function formatAttribute(attribute) {

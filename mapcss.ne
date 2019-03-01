@@ -15,23 +15,26 @@ selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
            | nested_selector
 
-selector -> type zoom:? attributes:? (_ subpart):? (_ within):? {%
-  ([type, zoom, attributes, subpart, within]) => ({
+selector -> type zoom:? attributes:? pseudoclasses:? layer:? {%
+  ([type, zoom, attributes, pseudoclasses, layer]) => ({
       type: type,
       zoom: zoom,
       attributes: attributes,
-      subpart: subpart,
-      within: within
+      pseudoclasses: pseudoclasses,
+      layer: layer
   })
 %}
 
 nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
       | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
 
+pseudoclasses   -> pseudoclass:+ {% id %}
+pseudoclass     -> _ ":" term                 {% ([_1, _2, pseudoclass]) => pseudoclass %}
 
-subpart -> "::" _ string {% ([_1, _2, value]) => value %}
+layer           -> _ "::" term                {% ([_1, _2, value]) => value %}
+#subpart -> "::" _ string {% ([_1, _2, value]) => value %}
 
-within -> ">" selector
+#within -> ">" selector
 
 # Attributes selector
 
@@ -49,6 +52,8 @@ value           -> string                     {% id %}
 
 string          -> dqstring                   {% id %}
                  | [a-zA-Z0-9:_]:+            {% ([chars]) => chars.join("") %}
+
+term            -> [a-zA-Z0-9_]:+            {% ([chars]) => chars.join("") %}
 
 operator        -> "="                        {% id %}
                  | "!="                       {% id %}
@@ -71,7 +76,6 @@ regexp_flag     -> "i" {%id%}
 #
 # class -> "." string {% id %}
 #
-# pseudoclass -> "::" string {% id %}
 
 #condition -> identifier _ sign _ identifier
 
