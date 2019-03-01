@@ -82,9 +82,8 @@ regexp_flag     -> "i" {%id%}
 action          -> "{" _ statement:+ _ "}"    {% ([_1, _2, statements, _3, _4]) => (statements) %}
                  | "{" _ "}"                  {% () => [] %}
 
-#statements -> statement:* {% id %}
-
-statement -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({k: key, v: value}) %}
+statement       -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
+                 | "exit;"                    {% () => ({action: "exit"}) %}
 
 type    -> "way"      {% id %}
          | "node"     {% id %}
@@ -94,7 +93,9 @@ type    -> "way"      {% id %}
          | "canvas"   {% id %}
          | "*"        {% id %}
 
-value -> "\"" string "\"" {% id %}
+value           -> "\"" string "\""           {% id %}
+                 | css_color                  {% id %}
+                 | path                       {% id %}
 
 zoom -> _ "|" [zs] zoom_interval {% ([_, pipe, type, value]) => {
 	value.type = type;

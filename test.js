@@ -25,6 +25,7 @@ async function runSuite(file) {
     throw "Invalid number of tests for file " + file;
   }
 
+  var succeed = 0, failed = 0, errors = 0;
   for (var i = 0; i < rows.length; i += 2) {
     const desc = rows[i];
     const test = rows[i + 1];
@@ -35,13 +36,23 @@ async function runSuite(file) {
     try {
       const ast = parser.parse(test);
       const res = format(ast);
-      compareIgnoreSpace(desc, test, res);
+      if (compareIgnoreSpace(desc, test, res)) {
+        succeed += 1;
+      } else {
+        failed += 1;
+      }
     } catch (ex) {
       console.log(("FAILED: " + desc).red)
       console.log(ex);
+      errors += 1;
     }
-    //
   }
+
+  const suite = file;
+  console.log((succeed && !faield && !errors ? suite.green : suite.red) +
+    " Succeed: " + succeed.toString().green +
+    " Failed: " + failed.toString().yellow +
+    " Error: " + errors.toString().red);
 }
 
 function compareIgnoreSpace(test, expected, actual) {

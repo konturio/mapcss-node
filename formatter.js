@@ -95,7 +95,14 @@ function formatActions(actions) {
 }
 
 function formatAction(action) {
-  return action.k + ": " + action.v + ";";
+  switch (action.action) {
+    case "kv":
+      return action.k + ": " + action.v + ";";
+    case "exit":
+      return 'exit;'
+    default:
+      throw "Unexpected action: " + JSON.stringify(action);
+  }
 }
 
 module.exports = {
