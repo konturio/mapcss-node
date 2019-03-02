@@ -10,9 +10,14 @@ const tests_path = path.join('tests', 'auto');
 const mapcss_file = "mapcss.ne"
 
 async function run() {
-  const files = (await fs.readdir(tests_path))
+  var files = process.argv.filter((f) => f.match(/\.mapcss$/));
+  if (files.length == 0) {
+    files = (await fs.readdir(tests_path))
     .filter((f) => f.match(/\.mapcss$/))
     .map((f) => path.join(tests_path, f));
+  }
+
+
 
   files.reduce((promise, file) =>
     promise.then((result) => runSuite(file)
@@ -78,7 +83,7 @@ async function runTest(suite, test, css) {
   try {
     const ast = parser.parse(css);
     const res = format(ast);
-
+    //console.log(res);
     return compareIgnoreSpace(test, css, res);
   } catch (e) {
     console.log(("ERROR: " + test).red)

@@ -15,12 +15,13 @@ selectors -> selector
            | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
            | nested_selector
 
-selector -> type zoom:? attributes:? pseudoclasses:? layer:? {%
-  ([type, zoom, attributes, pseudoclasses, layer]) => ({
+selector -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:? {%
+  ([type, cls, zoom, attributes, pseudoclasses, layer]) => ({
       type: type,
       zoom: zoom,
       attributes: attributes,
       pseudoclasses: pseudoclasses,
+      class: cls,
       layer: layer
   })
 %}
@@ -71,22 +72,14 @@ regexp_flag     -> "i" {%id%}
                  | "g" {%id%}
                  | "m" {%id%}
 
-#           | class
-#           | pseudoclass
-#
-# class -> "." string {% id %}
-#
-
-#condition -> identifier _ sign _ identifier
-
 action          -> "{" _ statement:+ _ "}"    {% ([_1, _2, statements, _3, _4]) => (statements) %}
                  | "{" _ "}"                  {% () => [] %}
 
 statement       -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
-                 | "exit;"                    {% () => ({action: "exit"}) %}
-                 | "set" class_name           {% ([_1, class]) => ({action: 'set_class', v: class})%}
+                 | "exit" _ ";"               {% () => ({action: "exit"}) %}
+                 | "set" class_name _ ";"     {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
 
-class_name      -> _ "." term                 {% ([_1, _2, class] => class) %}
+class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
 
 type    -> "way"      {% id %}
          | "node"     {% id %}

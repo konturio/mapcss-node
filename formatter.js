@@ -4,7 +4,7 @@ function format(rules) {
 
 function formatRule(rule) {
   return "" + formatSelectors(rule.selectors)
-      + " {\n" + formatActions(rule.actions) + "}\n";
+      + " {" + formatActions(rule.actions) + "}\n";
 }
 
 function formatSelectors(selectors) {
@@ -19,6 +19,10 @@ function formatSelector(selector) {
 
   if (selector.type) {
     result += selector.type;
+  }
+
+  if (selector.class) {
+    result += " ." + selector.class;
   }
 
   if (selector.zoom) {
@@ -91,15 +95,20 @@ function formatAttributeValue(value) {
 }
 
 function formatActions(actions) {
-  return actions.map(formatAction).join("\n");
+  if (actions.length == 0) {
+    return "\n";
+  }
+  return "\n" + actions.map(formatAction).join("\n") + "\n";
 }
 
 function formatAction(action) {
   switch (action.action) {
     case "kv":
-      return action.k + ": " + action.v + ";";
+      return "  " + action.k + ": " + action.v + ";";
     case "exit":
-      return 'exit;'
+      return "  " + 'exit;'
+    case "set_class":
+      return "  " + "set ." + action.v + ";"
     default:
       throw "Unexpected action: " + JSON.stringify(action);
   }
