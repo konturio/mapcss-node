@@ -3,8 +3,8 @@ function format(rules) {
 }
 
 function formatRule(rule) {
-  return "" + formatSelectors(rule.selectors)
-      + " {" + formatActions(rule.actions) + "}\n";
+  return "" + formatSelectors(rule.selectors) + " "
+      + formatActionBlocks(rule.actions)
 }
 
 function formatSelectors(selectors) {
@@ -94,6 +94,12 @@ function formatAttributeValue(value) {
   return JSON.stringify(value)
 }
 
+function formatActionBlocks(blocks) {
+  return blocks
+    .map((block) => "{" + formatActions(block) + "}")
+    .join("\n");
+}
+
 function formatActions(actions) {
   if (actions.length == 0) {
     return "\n";
@@ -104,14 +110,67 @@ function formatActions(actions) {
 function formatAction(action) {
   switch (action.action) {
     case "kv":
-      return "  " + action.k + ": " + action.v + ";";
+      return "  " + escapeActionKey(action.k) + ": " + escapeActionValue(action.v) + ";";
     case "exit":
       return "  " + 'exit;'
     case "set_class":
       return "  " + "set ." + action.v + ";"
+    case "set_tag":
+      if ('v' in action) {
+        return "  " + "set " + action.k + " = " + escapeActionValue(action.v) + ";"
+      } else {
+        return "  " + "set " + action.k + ";"
+      }
     default:
       throw "Unexpected action: " + JSON.stringify(action);
   }
+}
+
+function escapeActionKey(k) {
+  return k;
+}
+
+function escapeActionValue(value) {
+  //console.log(v);
+  switch (value.type) {
+    case 'dqstring':
+      return JSON.stringify(value.v);
+    case 'uqstring':
+      return value.v;
+    case 'csscolor':
+      return formatCssColor(value.v);
+    default:
+      throw "Unexpected value type " + JSON.stringify(value);
+  }
+}
+
+function formatCssColor(color) {
+  if ('r' in color && 'g' in color && 'b' in color && 'a' in color) {
+    return "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + color.a + ")";
+  }
+  if ('h' in color && 's' in color && 'l' in color && 'a' in color) {
+    return "hsla(" + color.h + ", " + color.s + ", " + color.l + ", " + color.a + ")";
+  }
+  if ('h' in color && 's' in color && 'l' in color) {
+    return "hsl(" + color.h + ", " + color.s + ", " + color.l + ")";
+  }
+
+  if ('r' in color && 'g' in color && 'b' in color) {
+    var r = color.r.toString(16);
+    var g = color.g.toString(16);
+    var b = color.b.toString(16);
+
+    r = r.length == 1 ? '0' + r : r;
+    g = g.length == 1 ? '0' + g : g;
+    b = b.length == 1 ? '0' + b : b;
+
+    if (r[0] == r[1] && g[0] == g[1] && b[0] == b[1]) {
+      return "#" + r[0] + g[0] + b[0];
+    }
+    return "#" + r + g + b;
+  }
+
+  throw "Unexpected color type " + JSON.stringify(color);
 }
 
 module.exports = {

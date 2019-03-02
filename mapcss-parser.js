@@ -13,7 +13,8 @@ function compileGrammar(sourceCode) {
     const grammarAst = grammarParser.results[0]; // TODO check for errors
 
     // Compile the AST into a set of rules
-    const grammarInfoObject = compile(grammarAst, {});
+    const grammarInfoObject = compile(grammarAst, {args: '.'});
+    
     // Generate JavaScript code from the rules
     const grammarJs = generate(grammarInfoObject, "grammar");
 

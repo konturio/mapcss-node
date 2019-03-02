@@ -1,0 +1,9 @@
+// Define tag directly in MapCSS
+way {
+  set lit;
+}
+
+// Define tag value directly in MapCSS
+way {
+  set width = 10;
+}

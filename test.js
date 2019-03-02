@@ -83,7 +83,7 @@ async function runTest(suite, test, css) {
   try {
     const ast = parser.parse(css);
     const res = format(ast);
-    //console.log(res);
+    console.log(res);
     return compareIgnoreSpace(test, css, res);
   } catch (e) {
     console.log(("ERROR: " + test).red)

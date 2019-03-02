@@ -1,30 +1,68 @@
-//Simple actions
+// Simple actions
 way {
   width: 1;
 }
 
-//Multiple actions
+// Multiple actions
 way {
   width: 1;
   casing-width: 1;
 }
 
-//Multiple statement in two blocks
+// Period in tag value
 way {
-    color: #999;
+  width: 0.5;
+}
+
+// Multiple statement in two blocks
+way {
     width: 5px;
 }
 {
-    color: #fff;
     width: 4px;
 }
 
 // Unquoted font name
 way {
-    font-family: DejaVu Serif Italic;
+    font-family: sans-serif,arial;
+}
+
+// Quoted font name
+way {
+    font-family: "DjVu Sans";
 }
 
 // Colon in tag name
 way {
-    text: addr:housenumber;
+    text: "addr:housenumber";
+}
+
+// Unicode in tag value
+way {
+    text: "北野 武";
+}
+
+// 3 digit color
+way {
+    color: #fff;
+}
+
+// 6 digit color
+way {
+    color: #fefefe;
+}
+
+// rgba color
+way {
+    color: rgba(100, 201, 3, 0.5);
+}
+
+// 6 digit color padding
+way {
+    color: #0a0a0a;
+}
+
+// Black color
+way {
+    color: #000;
 }

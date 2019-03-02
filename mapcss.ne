@@ -2,15 +2,17 @@
 @builtin "number.ne"
 @builtin "string.ne"
 
+@include "csscolor.ne"
+
 css             -> rule:*                     {% id %}
 
-rule            -> selectors _ action _       {% ([s, _1, a, _2]) => ({selectors: s, actions: a}) %}
+rule            -> selectors action:+ _      {% ([s, a, ]) => ({selectors: s, actions: a}) %}
 
 selectors       -> selector
                  | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
                  | nested_selector
 
-selector        -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:?
+selector        -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:? _
                                               {%
                                                 ([type, cls, zoom, attributes, pseudoclasses, layer]) => ({
                                                     type: type,
@@ -45,9 +47,9 @@ tag             -> string                     {% id %}
 value           -> string                     {% id %}
 
 string          -> dqstring                   {% id %}
-                 | [a-zA-Z0-9:_-]:+            {% ([chars]) => chars.join("") %}
+                 | [a-zA-Z0-9:_\-]:+          {% ([chars]) => chars.join("") %}
 
-term            -> [a-zA-Z0-9_]:+            {% ([chars]) => chars.join("") %}
+term            -> [a-zA-Z0-9_]:+             {% ([chars]) => chars.join("") %}
 
 operator        -> "="                        {% id %}
                  | "!="                       {% id %}
@@ -55,6 +57,19 @@ operator        -> "="                        {% id %}
                  | "<="                       {% id %}
                  | ">"                        {% id %}
                  | ">="                       {% id %}
+
+# Zoom selectors
+zoom            -> _ "|" [zs] zoom_interval   {% ([_, pipe, type, value]) => {
+	                                                value.type = type;
+	                                                return value;
+                                                }
+                                              %}
+
+zoom_interval   -> unsigned_int               {% ([value]) => ({begin: value, end: value}) %}
+	  		         | unsigned_int:? "-" unsigned_int:?
+                                              {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
+
+# Regular Expressions
 
 regexp          -> "/" regexp_char:* "/" regexp_flag:*       {% ([_1, arr, _2, flags]) => ({regexp: arr.join(""), flags: flags.join("")}) %}
 
@@ -65,12 +80,18 @@ regexp_flag     -> "i" {%id%}
                  | "g" {%id%}
                  | "m" {%id%}
 
-action          -> "{" _ statement:+ _ "}"    {% ([_1, _2, statements, _3, _4]) => (statements) %}
+# Actions in curly braces block
+
+action          -> "{" _ statement:+ "}" _    {% ([_1, _2, statements, _3, _4]) => (statements) %}
                  | "{" _ "}"                  {% () => [] %}
 
-statement       -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
-                 | "exit" _ ";"               {% () => ({action: "exit"}) %}
-                 | "set" class_name _ ";"     {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
+statement       -> string _ ":" _ statement_value _ ";" _
+                                              {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
+                 | "exit" _ ";" _             {% () => ({action: "exit"}) %}
+                 | "set" class_name _ ";" _   {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
+                 | "set" _ term _ ";" _       {% ([_1, _2, tag]) => ({action: 'set_tag', k: tag}) %}
+                 | "set" _ term _ "=" _ statement_value _ ";" _
+                                              {% ([_1, _2, tag, _3, _4, _5, value]) => ({action: 'set_tag', k: tag, v: value}) %}
 
 class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
 
@@ -82,16 +103,11 @@ type            -> "way"                      {% id %}
                  | "canvas"                   {% id %}
                  | "*"                        {% id %}
 
-value           -> "\"" string "\""           {% id %}
-                 | css_color                  {% id %}
-                 | path                       {% id %}
+statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
+                 | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
+                 | uqstring                   {% ([x]) => ({type: 'uqstring', v: x}) %}
 
-zoom            -> _ "|" [zs] zoom_interval   {% ([_, pipe, type, value]) => {
-	                                                value.type = type;
-	                                                return value;
-                                                }
-                                              %}
+# Unquoted string containing punctuation marks
+uqstring        -> spchar:+                   {% ([chars]) => chars.join("") %}
 
-zoom_interval   -> unsigned_int               {% ([value]) => ({begin: value, end: value}) %}
-	  		         | unsigned_int:? "-" unsigned_int:?
-                                              {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
+spchar          -> [a-zA-Z0-9\-_:.,\\\/]
