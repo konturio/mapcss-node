@@ -2,43 +2,36 @@
 @builtin "number.ne"
 @builtin "string.ne"
 
-@{%
-//  const tokenPrint = { literal: "print" };
-  const tokenRegex = { test: x => x.match(/\/.*\//) };
-%}
+css             -> rule:*                     {% id %}
 
-css -> rule:* {% id %}
+rule            -> selectors _ action _       {% ([s, _1, a, _2]) => ({selectors: s, actions: a}) %}
 
-rule -> selectors _ action _ {% ([s, _1, a, _2]) => ({selectors: s, actions: a}) %}
+selectors       -> selector
+                 | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
+                 | nested_selector
 
-selectors -> selector
-           | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
-           | nested_selector
+selector        -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:?
+                                              {%
+                                                ([type, cls, zoom, attributes, pseudoclasses, layer]) => ({
+                                                    type: type,
+                                                    zoom: zoom,
+                                                    attributes: attributes,
+                                                    pseudoclasses: pseudoclasses,
+                                                    class: cls,
+                                                    layer: layer
+                                                  })
+                                              %}
 
-selector -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:? {%
-  ([type, cls, zoom, attributes, pseudoclasses, layer]) => ({
-      type: type,
-      zoom: zoom,
-      attributes: attributes,
-      pseudoclasses: pseudoclasses,
-      class: cls,
-      layer: layer
-  })
-%}
-
-nested_selector -> selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
-      | nested_selector __ selector {% ([parent, _, child]) => {child.parent = parent; return child;} %}
+nested_selector -> selector __ selector       {% ([parent, _, child]) => {child.parent = parent; return child;} %}
+                 | nested_selector __ selector
+                                              {% ([parent, _, child]) => {child.parent = parent; return child;} %}
 
 pseudoclasses   -> pseudoclass:+ {% id %}
 pseudoclass     -> _ ":" term                 {% ([_1, _2, pseudoclass]) => pseudoclass %}
 
 layer           -> _ "::" term                {% ([_1, _2, value]) => value %}
-#subpart -> "::" _ string {% ([_1, _2, value]) => value %}
-
-#within -> ">" selector
 
 # Attributes selector
-
 attributes      -> attribute:+                {% id %}
 
 attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => predicates %}
@@ -81,22 +74,24 @@ statement       -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) 
 
 class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
 
-type    -> "way"      {% id %}
-         | "node"     {% id %}
-         | "relation" {% id %}
-         | "area"     {% id %}
-         | "line"     {% id %}
-         | "canvas"   {% id %}
-         | "*"        {% id %}
+type            -> "way"                      {% id %}
+                 | "node"                     {% id %}
+                 | "relation"                 {% id %}
+                 | "area"                     {% id %}
+                 | "line"                     {% id %}
+                 | "canvas"                   {% id %}
+                 | "*"                        {% id %}
 
 value           -> "\"" string "\""           {% id %}
                  | css_color                  {% id %}
                  | path                       {% id %}
 
-zoom -> _ "|" [zs] zoom_interval {% ([_, pipe, type, value]) => {
-	value.type = type;
-	return value
-} %}
+zoom            -> _ "|" [zs] zoom_interval   {% ([_, pipe, type, value]) => {
+	                                                value.type = type;
+	                                                return value;
+                                                }
+                                              %}
 
-zoom_interval -> unsigned_int {% ([value]) => ({begin: value, end: value})%}
-	  		   | unsigned_int:? "-" unsigned_int:? {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
+zoom_interval   -> unsigned_int               {% ([value]) => ({begin: value, end: value}) %}
+	  		         | unsigned_int:? "-" unsigned_int:?
+                                              {% ([begin, interval, end]) => ({begin: begin, end: end}) %}
