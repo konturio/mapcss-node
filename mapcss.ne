@@ -84,6 +84,9 @@ action          -> "{" _ statement:+ _ "}"    {% ([_1, _2, statements, _3, _4]) 
 
 statement       -> string _ ":" _ value _ ";" {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
                  | "exit;"                    {% () => ({action: "exit"}) %}
+                 | "set" class_name           {% ([_1, class]) => ({action: 'set_class', v: class})%}
+
+class_name      -> _ "." term                 {% ([_1, _2, class] => class) %}
 
 type    -> "way"      {% id %}
          | "node"     {% id %}

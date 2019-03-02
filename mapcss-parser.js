@@ -1,3 +1,5 @@
+'use strict';
+
 const nearley = require("nearley");
 const compile = require("nearley/lib/compile");
 const generate = require("nearley/lib/generate");
@@ -22,11 +24,30 @@ function compileGrammar(sourceCode) {
     return module.exports;
 }
 
-function MapcssParser(grammar) {
-  this.grammar = grammar;
+function MapCSSParser() {
+  this.grammar = null;
 }
 
-MapcssParser.prototype.parse = function(text) {
+MapCSSParser.prototype.initFromFile = function(file) {
+  var self = this;
+
+  return new Promise(function(resolve, reject) {
+    fs.readFile(file, {}, function (err, data) {
+      if (err) {
+        return reject(err);
+      }
+
+      self.grammar = compileGrammar(data);
+      resolve();
+    });
+  });
+}
+
+MapCSSParser.prototype.parse = function(text) {
+  if (!this.grammar) {
+    throw "Parser is not initialized"
+  }
+
   const parser = new nearley.Parser(nearley.Grammar.fromCompiled(this.grammar));
 
   parser.feed(text.trim());
@@ -42,13 +63,8 @@ MapcssParser.prototype.parse = function(text) {
   return parser.results[0];
 }
 
-module.exports = new Promise(function(resolve, reject){
-    fs.readFile("mapcss.ne", {}, function (err, data) {
-      if (err) {
-        return reject(err);
-      }
-
-      const grammar = compileGrammar(data);
-      resolve(new MapcssParser(grammar));
-    });
-});
+if (typeof module !== 'undefined'&& typeof module.exports !== 'undefined') {
+   module.exports = MapCSSParser;
+} else {
+   window.MapCSSParser = MapCSSParser;
+}
