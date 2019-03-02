@@ -7,3 +7,8 @@ way {
 way {
   set width = 10;
 }
+
+// Colon in tag name
+way {
+  set addr:housenumber = 6;
+}
