@@ -122,7 +122,7 @@ function compareIgnoreSpace(test, expected, actual) {
     // grey for common parts
     var color = part.added ? 'green' :
       part.removed ? 'red' : 'grey';
-      process.stderr.write(part.value[color]);
+      console.log(part.value[color]);
   });
 
   return false;

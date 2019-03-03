@@ -1,3 +1,4 @@
+@builtin "postprocessors.ne"
 @builtin "whitespace.ne"
 @builtin "number.ne"
 @builtin "string.ne"
@@ -7,7 +8,9 @@
 css             -> _ rule:*                   {% ([_1, rules]) => rules %}
 
 rule            -> selectors action:+ _       {% ([s, a, ]) => ({selectors: s, actions: a}) %}
+                 | import                     {% ([imp]) => ({'import' : imp}) %}
 
+# Selectors
 selectors       -> selector
                  | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
                  | nested_selector
@@ -106,6 +109,11 @@ type            -> "way"                      {% id %}
 statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
                  | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
                  | uqstring                   {% ([x]) => ({type: 'uqstring', v: x}) %}
+
+# imports
+import         => "@import" _ "url" _ "(" _ dqstring _ ")" (_ term):? _ ";"
+                                              {% (d) => ({ url: d[6], pseudoclass: d[9] ? d[9][1] : null}) %}
+
 
 # Unquoted string containing punctuation marks
 uqstring        -> spchar:+                   {% ([chars]) => chars.join("") %}

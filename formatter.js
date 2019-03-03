@@ -3,8 +3,20 @@ function format(rules) {
 }
 
 function formatRule(rule) {
-  return "" + formatSelectors(rule.selectors) + " "
-      + formatActionBlocks(rule.actions)
+  if ('selectors' in rule) {
+    return "" + formatSelectors(rule.selectors) + " "
+        + formatActionBlocks(rule.actions)
+  }
+
+  if ('import' in rule) {
+    const imp = rule.import;
+
+    return "@import url(" + JSON.stringify(imp.url) + ")"
+        + (imp.pseudoclass ? " " + imp.pseudoclass : '')
+        + ';';
+  }
+
+  throw "Unexpected rule type: " + JSON.stringify(rule);
 }
 
 function formatSelectors(selectors) {
