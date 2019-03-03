@@ -1,14 +1,14 @@
-// Use eval type conversion
+// @Test Use eval type conversion
 way {
   width: eval(num("2") * 4);
 }
 
-//Eval tag value
+// @Test Eval tag value
 way {
   opacity: eval(tag("population")/100000);
 }
 
-// Eval arithmetics
+// @Test Eval arithmetics
 way {
     width: eval(1 + 2 * 3 - 4 / 5);
 }

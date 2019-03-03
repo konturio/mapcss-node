@@ -1,23 +1,23 @@
-// Simple rule
+// @Test Simple rule
 node {
 }
 
-// Multiple Rules
+// @Test Multiple Rules
 way {
 }
 node {
 }
 
-// Multiple Selectors
+// @Test Multiple Selectors
 node, way, relation {
 }
 
-// Special selectors
+// @Test Special selectors
 area,
 line,
 canvas,
 * {}
 
-// Nested selectors
+// @Test Nested selectors
 relation way node {
 }

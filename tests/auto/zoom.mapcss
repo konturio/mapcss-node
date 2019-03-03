@@ -1,11 +1,11 @@
-// Zoom range
+// @Test Zoom range
 way|z1-18 {}
 
-// Zoom range open lower boundary
+// @Test Zoom range open lower boundary
 way|z-18 {}
 
-// Zoom range open upper boundary
+// @Test Zoom range open upper boundary
 way|z1- {}
 
-// Zoom exact value
+// @Test Zoom exact value
 way|z10 {}

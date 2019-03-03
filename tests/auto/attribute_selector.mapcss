@@ -1,49 +1,49 @@
-// Exact tag value
+// @Test Exact tag value
 way[highway=residential] {
 }
 
-// Tag presence
+// @Test Tag presence
 way[shop] {
 }
 
-// Tag absence
+// @Test Tag absence
 way[!shop] {
 }
 
-// Underscore in tag name
+// @Test Underscore in tag name
 node[opening_hours] {
 }
 
-// Quoted tag value
+// @Test Quoted tag value
 node[name="\"Sunrise\" hotel"] {
 }
 
-// Colon in tag name without quotes
+// @Test Colon in tag name without quotes
 way[addr:street] {
 }
 
-// Quoted tag name
+// @Test Quoted tag name
 way["highway street"] {
 }
 
-// Combination of attributes
+// @Test Combination of attributes
 way[highway=track][!lit] {
 }
 
-// Tag value not equals
+// @Test Tag value not equals
 way[tunnel!=yes] {}
 
-// Tag value lesser
+// @Test Tag value lesser
 way[population<10000] {}
 
-// Tag value lesser or equals
+// @Test Tag value lesser or equals
 way[population<=10000] {}
 
-// Tag value greater
+// @Test Tag value greater
 way[population>10000] {}
 
-// Tag value greater or equals
+// @Test Tag value greater or equals
 way[population>=10000] {}
 
-// Tag value regex match
+// @Test Tag value regex match
 way[name~=/^(St\/?art).*$/i] {}

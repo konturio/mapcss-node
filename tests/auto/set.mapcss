@@ -1,14 +1,14 @@
-// Define tag directly in MapCSS
+// @Test Define tag directly in MapCSS
 way {
   set lit;
 }
 
-// Define tag value directly in MapCSS
+// @Test Define tag value directly in MapCSS
 way {
   set width = 10;
 }
 
-// Colon in tag name
+// @Test Colon in tag name
 way {
   set addr:housenumber = 6;
 }

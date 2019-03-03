@@ -1,5 +1,5 @@
-// Import another file
+// @Test Import another file
 @import url("osmtags.mapcss");
 
-// Import another file to separate scope
+// @Test Import another file to separate scope
 @import url("osmtags.mapcss") osmtags;

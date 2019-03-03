@@ -39,7 +39,7 @@ async function runSuite(file) {
   const css = (await fs.readFile(file)).toString();
   const suite = file;
 
-  const rows = css.split(/^\s*\/\/\s*(.*$)/m)
+  const rows = css.split(/^\s*\/\/\s*@Test(.*$)/im)
       .map((r) => r.trim())
       .filter((r) => r);
 
@@ -80,11 +80,20 @@ async function runTest(suite, test, css) {
   const parser = new MapCSSParser();
   await parser.initFromFile(mapcss_file);
 
+  const parts = css.split(/^\/\/\s*@Expected.*$/m);
+  var expectation;
+  if (parts.length > 1) {
+    css = parts[0].trim();
+    expectation = parts[1].trim();
+  } else {
+    expectation = css.trim();
+  }
+
   try {
     const ast = parser.parse(css);
     const res = format(ast);
     console.log(res);
-    return compareIgnoreSpace(test, css, res);
+    return compareIgnoreSpace(test, expectation, res);
   } catch (e) {
     console.log(("ERROR: " + test).red)
     console.log(e)
@@ -93,7 +102,15 @@ async function runTest(suite, test, css) {
 }
 
 function compareIgnoreSpace(test, expected, actual) {
-  if (expected.replace(/\s*/g, "").trim() == actual.replace(/\s*/g, "").trim()) {
+  expected = expected
+      .replace(/\s*/g, "")
+      .trim();
+
+  actual = actual
+      // Drop comments
+      .replace(/\s*/g, "")
+      .trim();
+  if (expected == actual) {
     console.log(("  OK: " + test).green)
     return true;
   }

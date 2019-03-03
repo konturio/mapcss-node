@@ -1,10 +1,27 @@
-// File with comments 
-/* Comment */
+// @Test File with comments
+/* Comment 1 */
 /* Multiline
    Comment
 */
-way /* Comment */
+way /* Comment 2 */
 {
-/* Comment */
-    exit; /* Comment */
+/* Comment 3 */
+    exit; /* Comment 4*/
+    text:  "not a /* comment */";
+}
+// @Expected
+way {
+    exit;
+    text:  "not a /* comment */";
+}
+
+// @Test Single line comments
+// Rule comment
+way { //EOL comment
+    //Internal comment
+    icon: "path//not//comment";
+}
+// @Expected
+way {
+    icon: "path//not//comment";
 }

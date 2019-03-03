@@ -1,4 +1,4 @@
-//Canvas tag
+// @Test Canvas tag
 canvas {
     antialiasing: full;
     fill-color: #000;
@@ -6,7 +6,7 @@ canvas {
     fill-image: fills/grass.png;
 }
 
-//Line style
+// @Test Line style
 way {
     z-index: 1;
     width: 5;
@@ -32,7 +32,7 @@ way {
     extrude-face-opacity: 0.4;
 }
 
-//Icon style
+// @Test Icon style
 node {
     icon-image: icons/pharmacy.png;
     icon-width: 25;
@@ -40,7 +40,7 @@ node {
     icon-opacity: 0.3;
 }
 
-//Text style
+// @Test Text style
 node {
     font-family: DejaVu;
     font-size: 12;
@@ -58,7 +58,7 @@ node {
     text-halo-radius: 2;
 }
 
-//Shield style
+// @Test Shield style
 way {
     shield-color: blue;
     shield-color: #00f;
@@ -72,12 +72,12 @@ way {
     shield-shape: rounded;
 }
 
-//Exit statement
+// @Test Exit statement
 canvas {
     exit;
 }
 
-// Nested selectors with attribute checks
+// @Test Nested selectors with attribute checks
 relation[type=restriction] way[highway] {
 }
 relation[type=restriction] way[highway] node[highway=traffic_signals] {

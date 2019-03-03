@@ -4,9 +4,9 @@
 
 @include "csscolor.ne"
 
-css             -> rule:*                     {% id %}
+css             -> _ rule:*                   {% ([_1, rules]) => rules %}
 
-rule            -> selectors action:+ _      {% ([s, a, ]) => ({selectors: s, actions: a}) %}
+rule            -> selectors action:+ _       {% ([s, a, ]) => ({selectors: s, actions: a}) %}
 
 selectors       -> selector
                  | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
@@ -89,7 +89,7 @@ statement       -> string _ ":" _ statement_value _ ";" _
                                               {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
                  | "exit" _ ";" _             {% () => ({action: "exit"}) %}
                  | "set" class_name _ ";" _   {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
-                 | "set" _ tag _ ";" _       {% ([_1, _2, tag]) => ({action: 'set_tag', k: tag}) %}
+                 | "set" _ tag _ ";" _        {% ([_1, _2, tag]) => ({action: 'set_tag', k: tag}) %}
                  | "set" _ tag _ "=" _ statement_value _ ";" _
                                               {% ([_1, _2, tag, _3, _4, _5, value]) => ({action: 'set_tag', k: tag, v: value}) %}
 
@@ -111,3 +111,10 @@ statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v:
 uqstring        -> spchar:+                   {% ([chars]) => chars.join("") %}
 
 spchar          -> [a-zA-Z0-9\-_:.,\\\/]
+
+# Comments
+mcomment        -> "/*" [^*]:* ("*":+ [^/*] [^*]:*):* "*":* "*/"
+                                              {% () => null %}
+                 | "//" [^\n]:*               {% () => null %}
+
+wschar          -> mcomment                   {% () => null %}

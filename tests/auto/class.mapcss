@@ -1,8 +1,8 @@
-// Set class action
+// @Test Set class action
 way {
     set .minor_road;
 }
 
-//Class selector
+// @Test Class selector
 way .minor_road {
 }
