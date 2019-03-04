@@ -22,7 +22,10 @@ async function run() {
   files.reduce((promise, file) =>
     promise.then((result) => runSuite(file)
       .then(Array.prototype.concat.bind(result))
-      .catch((e) => console.error(("Cannot run test " + file + "\n ").red, e))
+      .catch((e) => {
+        console.error(("Cannot run test " + file + "\n ").red, e)
+        return [];
+      })
     )
   , Promise.resolve([]))
     .then((results) => {
@@ -38,12 +41,13 @@ async function run() {
 async function runSuite(file) {
   const css = (await fs.readFile(file)).toString();
   const suite = file;
-
-  const rows = css.split(/^\s*\/\/\s*@Test(.*$)/im)
+  var rows = css.split(/^\s*\/\/\s*@Test(.*$)/im)
       .map((r) => r.trim())
       .filter((r) => r);
 
-  if (rows.length % 2) {
+  if (rows.length == 1) {
+    rows = [file, rows[0]];
+  } else if (rows.length % 2) {
     throw "Cannot read tests from " + file;
   }
 
@@ -92,7 +96,7 @@ async function runTest(suite, test, css) {
   try {
     const ast = parser.parse(css);
     const res = format(ast);
-    console.log(res);
+    //console.log(res);
     return compareIgnoreSpace(test, expectation, res);
   } catch (e) {
     console.log(("ERROR: " + test).red)

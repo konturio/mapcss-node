@@ -1,3 +1,10 @@
+// @Test multiple rules
+way {
+}
+
+node {
+}
+
 // @Test Canvas tag
 canvas {
     antialiasing: full;
@@ -78,7 +85,5 @@ canvas {
 }
 
 // @Test Nested selectors with attribute checks
-relation[type=restriction] way[highway] {
-}
 relation[type=restriction] way[highway] node[highway=traffic_signals] {
 }

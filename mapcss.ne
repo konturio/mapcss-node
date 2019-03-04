@@ -7,7 +7,7 @@
 
 css             -> _ rule:*                   {% ([_1, rules]) => rules %}
 
-rule            -> selectors action:+ _       {% ([s, a, ]) => ({selectors: s, actions: a}) %}
+rule            -> selectors action:+         {% ([s, a]) => ({selectors: s, actions: a}) %}
                  | import                     {% ([imp]) => ({'import' : imp}) %}
 
 # Selectors
@@ -42,7 +42,7 @@ attributes      -> attribute:+                {% id %}
 attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => predicates %}
 
 predicate       -> tag                        {% ([tag]) => ({type: "presence", key: tag}) %}
-                 | tag operator value         {% ([tag, op, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
+                 | tag _ operator _ value         {% ([tag, _1, op, _2, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
                  | "!" tag                    {% ([_, tag]) => ({type: "absence", key: tag}) %}
                  | tag "~=" regexp            {% ([tag, op, value]) => ({type: "regexp", key: tag, value: value, op: op}) %}
 
@@ -86,7 +86,7 @@ regexp_flag     -> "i" {%id%}
 # Actions in curly braces block
 
 action          -> "{" _ statement:+ "}" _    {% ([_1, _2, statements, _3, _4]) => (statements) %}
-                 | "{" _ "}"                  {% () => [] %}
+                 | "{" _ "}" _                {% () => [] %}
 
 statement       -> string _ ":" _ statement_value _ ";" _
                                               {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
@@ -108,10 +108,41 @@ type            -> "way"                      {% id %}
 
 statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
                  | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
+                 | eval                       {% ([x]) => ({type: 'eval', v: x}) %}
                  | uqstring                   {% ([x]) => ({type: 'uqstring', v: x}) %}
 
+# Eval Expressions
+
+eval            -> "eval" _ "(" _ AS:? _ ")"  {% nth(4) %}
+
+#Add and subtract
+AS              -> AS _ "+" _ MD              {% ([a, _1, _2, _3, b]) => ({op: "+", args: [a, b]}) %}
+                 | AS _ "-" _ MD              {% ([a, _1, _2, _3, b]) => ({op: "-", args: [a, b]}) %}
+	               | MD                         {% id %}
+
+# Multiply and divide
+MD              -> MD _ "*" _ P               {% ([a, _1, _2, _3, b]) => ({op: "*", args: [a, b]}) %}
+                 | MD _ "/" _ P               {% ([a, _1, _2, _3, b]) => ({op: "/", args: [a, b]}) %}
+                 | P                          {% id %}
+
+# Parentheses
+P               -> "(" _ AS _ ")"             {% nth(2) %}
+                 | N                          {% id %}
+
+N               -> float                      {% id %}
+                 | func                       {% id %}
+                 | dqstring                   {% id %}
+
+float           -> int "." int                {% (d) => parseFloat(d[0] + d[1] + d[2]) %}
+	               | int                        {% (d) => parseInt(d[0]) %}
+
+func            -> term _ "(" (_ function_arg):? _ ")"
+                                              {% ([func, _1, _2, args]) => ({func: func, args: args ? args[1] : null}) %}
+
+function_arg    -> AS
+                 | function_arg _ "," _ function_arg
 # imports
-import         => "@import" _ "url" _ "(" _ dqstring _ ")" (_ term):? _ ";"
+import          -> "@import" _ "url" _ "(" _ dqstring _ ")" (_ term):? _ ";"
                                               {% (d) => ({ url: d[6], pseudoclass: d[9] ? d[9][1] : null}) %}
 
 

@@ -4,7 +4,9 @@ node {
 
 // @Test Multiple Rules
 way {
+  width: 1;
 }
+
 node {
 }
 

@@ -47,3 +47,8 @@ way[population>=10000] {}
 
 // @Test Tag value regex match
 way[name~=/^(St\/?art).*$/i] {}
+
+// @Test Whitespaces in selector
+node [building = yes] {
+
+}
