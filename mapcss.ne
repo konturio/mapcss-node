@@ -5,6 +5,8 @@
 
 @include "csscolor.ne"
 
+@include "eval.ne"
+
 css             -> _ rule:*                   {% ([_1, rules]) => rules %}
 
 rule            -> selectors action:+         {% ([s, a]) => ({selectors: s, actions: a}) %}
@@ -42,7 +44,7 @@ attributes      -> attribute:+                {% id %}
 attribute       -> _ "[" predicate "]"        {% ([_0, _1, predicates, _2]) => predicates %}
 
 predicate       -> tag                        {% ([tag]) => ({type: "presence", key: tag}) %}
-                 | tag _ operator _ value         {% ([tag, _1, op, _2, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
+                 | tag _ operator _ value     {% ([tag, _1, op, _2, value]) => ({type: "cmp", key: tag, value: value, op: op}) %}
                  | "!" tag                    {% ([_, tag]) => ({type: "absence", key: tag}) %}
                  | tag "~=" regexp            {% ([tag, op, value]) => ({type: "regexp", key: tag, value: value, op: op}) %}
 
@@ -63,9 +65,9 @@ operator        -> "="                        {% id %}
 
 # Zoom selectors
 zoom            -> _ "|" [zs] zoom_interval   {% ([_, pipe, type, value]) => {
-	                                                value.type = type;
-	                                                return value;
-                                                }
+	                                                 value.type = type;
+	                                                 return value;
+                                                 }
                                               %}
 
 zoom_interval   -> unsigned_int               {% ([value]) => ({begin: value, end: value}) %}
@@ -74,14 +76,15 @@ zoom_interval   -> unsigned_int               {% ([value]) => ({begin: value, en
 
 # Regular Expressions
 
-regexp          -> "/" regexp_char:* "/" regexp_flag:*       {% ([_1, arr, _2, flags]) => ({regexp: arr.join(""), flags: flags.join("")}) %}
+regexp          -> "/" regexp_char:* "/" regexp_flag:*
+                                              {% ([_1, arr, _2, flags]) => ({regexp: arr.join(""), flags: flags.join("")}) %}
 
 regexp_char     -> [^/]
                  | "\/"
 
-regexp_flag     -> "i" {%id%}
-                 | "g" {%id%}
-                 | "m" {%id%}
+regexp_flag     -> "i"
+                 | "g"
+                 | "m"
 
 # Actions in curly braces block
 
@@ -98,49 +101,20 @@ statement       -> string _ ":" _ statement_value _ ";" _
 
 class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
 
-type            -> "way"                      {% id %}
-                 | "node"                     {% id %}
-                 | "relation"                 {% id %}
-                 | "area"                     {% id %}
-                 | "line"                     {% id %}
-                 | "canvas"                   {% id %}
-                 | "*"                        {% id %}
+
+type            -> "way"
+                 | "node"
+                 | "relation"
+                 | "area"
+                 | "line"
+                 | "canvas"
+                 | "*"
 
 statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
                  | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
                  | eval                       {% ([x]) => ({type: 'eval', v: x}) %}
                  | uqstring                   {% ([x]) => ({type: 'uqstring', v: x}) %}
 
-# Eval Expressions
-
-eval            -> "eval" _ "(" _ AS:? _ ")"  {% nth(4) %}
-
-#Add and subtract
-AS              -> AS _ "+" _ MD              {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "+", left: a, right: b}) %}
-                 | AS _ "-" _ MD              {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "-", left: a, right: b}) %}
-	               | MD                         {% id %}
-
-# Multiply and divide
-MD              -> MD _ "*" _ P               {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "*", left: a, right: b}) %}
-                 | MD _ "/" _ P               {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "/", left: a, right: b}) %}
-                 | P                          {% id %}
-
-# Parentheses
-P               -> "(" _ AS _ ")"             {% nth(2) %}
-                 | N                          {% id %}
-
-N               -> float                      {% ([x]) => ({type: 'number', value: x}) %}
-                 | func                       {% id %}
-                 | dqstring                   {% ([x]) => ({type: 'string', value: x}) %}
-
-float           -> int "." int                {% (d) => parseFloat(d[0] + d[1] + d[2]) %}
-	               | int                        {% (d) => parseInt(d[0]) %}
-
-func            -> term _ "(" (_ function_arg):? _ ")"
-                                              {% ([func, _1, _2, args]) => ({type: 'function', func: func, args: args ? args[1] : null}) %}
-
-function_arg    -> AS
-                 | function_arg _ "," _ function_arg
 # imports
 import          -> "@import" _ "url" _ "(" _ dqstring _ ")" (_ term):? _ ";"
                                               {% (d) => ({ url: d[6], pseudoclass: d[9] ? d[9][1] : null}) %}
@@ -155,5 +129,7 @@ spchar          -> [a-zA-Z0-9\-_:.,\\\/]
 mcomment        -> "/*" [^*]:* ("*":+ [^/*] [^*]:*):* "*":* "*/"
                                               {% () => null %}
                  | "//" [^\n]:*               {% () => null %}
+
+# Treat comments as a whitespace characters
 
 wschar          -> mcomment                   {% () => null %}
