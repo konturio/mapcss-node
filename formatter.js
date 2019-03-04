@@ -151,9 +151,31 @@ function escapeActionValue(value) {
       return value.v;
     case 'csscolor':
       return formatCssColor(value.v);
+    case "eval":
+      return "eval(" + formatEval(value.v) + ")";
     default:
       throw "Unexpected value type " + JSON.stringify(value);
   }
+}
+
+
+function formatEval(eval) {
+  //console.log(JSON.stringify(eval, 2, 2));
+
+  switch (eval.type) {
+    case "binary_op":
+      return formatEval(eval.left) + " " + eval.op + " " + formatEval(eval.right);
+    case "function":
+      return eval.func + "(" + eval.args.map(formatEval).join(", ") + ")";
+    case "string":
+      return JSON.stringify(eval.value);
+    case "number":
+      return eval.value;
+    default:
+      throw "Unexpected eval type " + JSON.stringify(eval);
+  }
+
+  return JSON.stringify(eval);
 }
 
 function formatCssColor(color) {
