@@ -13,8 +13,8 @@ async function run() {
   var files = process.argv.filter((f) => f.match(/\.mapcss$/));
   if (files.length == 0) {
     files = (await fs.readdir(tests_path))
-    .filter((f) => f.match(/\.mapcss$/))
-    .map((f) => path.join(tests_path, f));
+      .filter((f) => f.match(/\.mapcss$/))
+      .map((f) => path.join(tests_path, f));
   }
 
 
@@ -42,8 +42,8 @@ async function runSuite(file) {
   const css = (await fs.readFile(file)).toString();
   const suite = file;
   var rows = css.split(/^\s*\/\/\s*@Test(.*$)/im)
-      .map((r) => r.trim())
-      .filter((r) => r);
+    .map((r) => r.trim())
+    .filter((r) => r);
 
   if (rows.length == 1) {
     rows = [file, rows[0]];
@@ -63,7 +63,7 @@ async function runSuite(file) {
   console.log(suite.yellow)
   return tasks.reduce((promise, task) =>
     promise.then((result) => task().then(Array.prototype.concat.bind(result))),
-      Promise.resolve([])
+  Promise.resolve([])
   ).then((results) => {
     const succeed = results.filter((x) => x).length;
     const failed = results.filter((x) => !x).length;
@@ -107,13 +107,13 @@ async function runTest(suite, test, css) {
 
 function compareIgnoreSpace(test, expected, actual) {
   expected = expected
-      .replace(/\s*/g, "")
-      .trim();
+    .replace(/\s*/g, "")
+    .trim();
 
   actual = actual
-      // Drop comments
-      .replace(/\s*/g, "")
-      .trim();
+  // Drop comments
+    .replace(/\s*/g, "")
+    .trim();
   if (expected == actual) {
     console.log(("  OK: " + test).green)
     return true;
@@ -126,7 +126,7 @@ function compareIgnoreSpace(test, expected, actual) {
     // grey for common parts
     var color = part.added ? 'green' :
       part.removed ? 'red' : 'grey';
-      console.log(part.value[color]);
+    console.log(part.value[color]);
   });
 
   return false;

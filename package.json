@@ -1,10 +1,10 @@
 {
   "name": "mapcss",
-  "version"
-  : "1.0.0",
+  "version": "1.0.0",
   "description": "",
   "main": "",
   "dependencies": {
+    "eslint": "^5.15.1",
     "nearley": "^2.16.0"
   },
   "devDependencies": {
@@ -17,7 +17,8 @@
     "lib": "./lib"
   },
   "scripts": {
-    "test": "node test/unit.js"
+    "test": "node test/unit.js",
+    "lint": "eslint --fix ./lib"
   },
   "author": "Miroff",
   "license": "UNLICENSED"
