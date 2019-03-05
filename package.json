@@ -2,7 +2,7 @@
   "name": "mapcss",
   "version": "1.0.0",
   "description": "",
-  "main": "",
+  "main": "lib/mapcss-parser",
   "dependencies": {
     "eslint": "^5.15.1",
     "nearley": "^2.16.0"
@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test": "node test/unit.js",
-    "lint": "eslint --fix ./libgit"
+    "lint": "eslint --fix ./lib",
+    "pretest": "scripts/compile.js",
+    "preinstall": "scripts/compile.js"
   },
   "author": "Miroff",
   "license": "UNLICENSED"

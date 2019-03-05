@@ -4,10 +4,9 @@ require('colors');
 const diff = require('diff');
 
 const format = require('../lib/formatter').format;
-const MapCSSParser = require('../lib/mapcss-parser');
+const parser = require('../lib/mapcss-parser');
 
 const tests_path = path.join('test', 'auto');
-const mapcss_file = path.join('grammar', 'mapcss.ne');
 
 async function run() {
   var files = process.argv.filter((f) => f.match(/\.mapcss$/));
@@ -81,9 +80,6 @@ async function runSuite(file) {
 }
 
 async function runTest(suite, test, css) {
-  const parser = new MapCSSParser();
-  await parser.initFromFile(mapcss_file);
-
   const parts = css.split(/^\/\/\s*@Expected.*$/m);
   var expectation;
   if (parts.length > 1) {
