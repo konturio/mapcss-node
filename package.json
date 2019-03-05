@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "node test/unit.js",
-    "lint": "eslint --fix ./lib"
+    "lint": "eslint --fix ./libgit"
   },
   "author": "Miroff",
   "license": "UNLICENSED"
