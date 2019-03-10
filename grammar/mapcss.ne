@@ -101,13 +101,13 @@ statement       -> string _ ":" _ statement_value _ ";" _
 class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
 
 
-type            -> "way"
-                 | "node"
-                 | "relation"
-                 | "area"
-                 | "line"
-                 | "canvas"
-                 | "*"
+type            -> "way"                      {% id %}
+                 | "node"                     {% id %}
+                 | "relation"                 {% id %}
+                 | "area"                     {% id %}
+                 | "line"                     {% id %}
+                 | "canvas"                   {% id %}
+                 | "*"                        {% id %}
 
 statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
                  | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
