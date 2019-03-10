@@ -52,3 +52,5 @@ way[name~=/^(St\/?art).*$/i] {}
 node [building = yes] {
 
 }
+// @Test Negative value in test
+way[layer=-1] {}
