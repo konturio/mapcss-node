@@ -16,14 +16,14 @@ selectors       -> selector
                  | selectors _ "," _ selector {% ([list, _1, _2, _3, item]) => list.concat(item) %}
                  | nested_selector
 
-selector        -> type class_name:? zoom:? attributes:? pseudoclasses:? layer:? _
+selector        -> type class:* zoom:? attributes:? pseudoclasses:? layer:? _
                                               {%
-                                                ([type, cls, zoom, attributes, pseudoclasses, layer]) => ({
+                                                ([type, classes, zoom, attributes, pseudoclasses, layer]) => ({
                                                     type: type,
                                                     zoom: zoom,
                                                     attributes: attributes,
                                                     pseudoclasses: pseudoclasses,
-                                                    class: cls,
+                                                    classes: classes,
                                                     layer: layer
                                                   })
                                               %}
@@ -93,12 +93,12 @@ action          -> "{" _ statement:+ "}" _    {% ([_1, _2, statements, _3, _4]) 
 statement       -> string _ ":" _ statement_value _ ";" _
                                               {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
                  | "exit" _ ";" _             {% () => ({action: "exit"}) %}
-                 | "set" class_name _ ";" _   {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
+                 | "set" class _ ";" _   {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
                  | "set" _ tag _ ";" _        {% ([_1, _2, tag]) => ({action: 'set_tag', k: tag}) %}
                  | "set" _ tag _ "=" _ statement_value _ ";" _
                                               {% ([_1, _2, tag, _3, _4, _5, value]) => ({action: 'set_tag', k: tag, v: value}) %}
 
-class_name      -> _ "." term                 {% ([_1, _2, cls]) => cls %}
+class           -> _ ("!" _):? "." term         {% ([_1, not, _2, cls]) => ({'class': cls, not: not ? !!not : false}) %}
 
 
 type            -> "way"                      {% id %}

@@ -6,3 +6,11 @@ way {
 // @Test Class selector
 way .minor_road {
 }
+
+// @Test Negative class selector
+way !.minor_road {
+}
+
+// @Test Multiple classes selector
+line.minor_road.unpaved {
+}
