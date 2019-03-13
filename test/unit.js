@@ -16,8 +16,6 @@ async function run() {
       .map((f) => path.join(tests_path, f));
   }
 
-
-
   files.reduce((promise, file) =>
     promise.then((result) => runSuite(file)
       .then(Array.prototype.concat.bind(result))

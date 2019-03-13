@@ -8,7 +8,7 @@
 
 css             -> _ rule:*                   {% ([_1, rules]) => rules %}
 
-rule            -> selectors action:+         {% ([s, a]) => ({selectors: s, actions: a}) %}
+rule            -> selectors action:+         {% ([s, a]) => ({selectors: s, actions: a ? a.reduce((x,y) => x.concat(y), []) : []}) %}
                  | import                     {% ([imp]) => ({'import' : imp}) %}
 
 # Selectors
@@ -93,12 +93,12 @@ action          -> "{" _ statement:+ "}" _    {% ([_1, _2, statements, _3, _4]) 
 statement       -> string _ ":" _ statement_value _ ";" _
                                               {% ([key, _1, _2, _3, value, _4]) => ({action: "kv", k: key, v: value}) %}
                  | "exit" _ ";" _             {% () => ({action: "exit"}) %}
-                 | "set" class _ ";" _   {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
+                 | "set" class _ ";" _        {% ([_1, cls]) => ({action: 'set_class', v: cls}) %}
                  | "set" _ tag _ ";" _        {% ([_1, _2, tag]) => ({action: 'set_tag', k: tag}) %}
                  | "set" _ tag _ "=" _ statement_value _ ";" _
                                               {% ([_1, _2, tag, _3, _4, _5, value]) => ({action: 'set_tag', k: tag, v: value}) %}
 
-class           -> _ ("!" _):? "." term         {% ([_1, not, _2, cls]) => ({'class': cls, not: not ? !!not : false}) %}
+class           -> _ ("!" _):? "." term       {% ([_1, not, _2, cls]) => ({'class': cls, not: not ? !!not : false}) %}
 
 
 type            -> "way"                      {% id %}
@@ -109,10 +109,10 @@ type            -> "way"                      {% id %}
                  | "canvas"                   {% id %}
                  | "*"                        {% id %}
 
-statement_value -> dqstring                   {% ([x]) => ({type: 'dqstring', v: x}) %}
+statement_value -> dqstring                   {% ([x]) => ({type: 'string', v: x}) %}
                  | csscolor                   {% ([x]) => ({type: 'csscolor', v: x}) %}
                  | eval                       {% ([x]) => ({type: 'eval', v: x}) %}
-                 | uqstring                   {% ([x]) => ({type: 'uqstring', v: x}) %}
+                 | uqstring                   {% ([x]) => ({type: 'string', v: x}) %}
 
 # imports
 import          -> "@import" _ "url" _ "(" _ dqstring _ ")" (_ term):? _ ";"

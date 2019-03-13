@@ -1,68 +1,74 @@
 // @Test Simple actions
-way {
+line {
   width: 1;
 }
 
 // @Test Multiple actions
-way {
+line {
   width: 1;
   casing-width: 1;
 }
 
 // @Test Period in tag value
-way {
+line {
   width: 0.5;
 }
 
 // @Test Multiple statement in two blocks
-way {
-    width: 5px;
+line {
+    casing-width: 5;
 }
 {
-    width: 4px;
+    width: 4;
+}
+
+// @Expected
+line {
+    casing-width: 5;
+    width: 4;
 }
 
 // @Test Unquoted font name
-way {
+line {
     font-family: sans-serif,arial;
 }
 
 // @Test Quoted font name
-way {
+line {
     font-family: "DjVu Sans";
 }
 
 // @Test Colon in tag name
-way {
-    text: "addr:housenumber";
+line {
+    text: addr:housenumber;
 }
 
 // @Test Unicode in tag value
-way {
+line {
     text: "北野 武";
 }
 
 // @Test 3 digit color
-way {
+line {
     color: #fff;
 }
 
 // @Test 6 digit color
-way {
+line {
     color: #fefefe;
 }
 
 // @Test rgba color
-way {
+line {
     color: rgba(100, 201, 3, 0.5);
 }
 
 // @Test 6 digit color padding
-way {
+line {
     color: #0a0a0a;
 }
 
 // @Test Black color
-way {
+line {
     color: #000;
 }
