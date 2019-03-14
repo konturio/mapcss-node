@@ -1,8 +1,13 @@
 {
   "name": "mapcss",
   "version": "1.0.0",
-  "description": "",
+  "description": "Parser for MapCSS",
   "main": "lib/mapcss-parser",
+  "keywords": [
+    "mapcss",
+    "openstreetmap",
+    "parser"
+  ],
   "dependencies": {
     "nearley": "^2.16.0"
   },
@@ -16,12 +21,24 @@
     "test": "./test",
     "lib": "./lib"
   },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "lib/"
+  ],
   "scripts": {
     "test": "node test/unit.js",
+    "test-cov": "nyc --reporter=text npm test",
+    "test-travis": "nyc --reporter=html --reporter=text npm test",
     "lint": "eslint --fix ./lib",
     "pretest": "scripts/compile.js",
     "prepack": "scripts/compile.js"
   },
   "author": "Miroff",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "exclude": [
+    "*/grammar/**",
+    "**/test/**",
+    "scripts/**"
+  ]
 }

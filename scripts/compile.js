@@ -25,7 +25,7 @@ function compileFunc(filename, sourceCode) {
   // Generate JavaScript code from the rules
   const grammarJs = generate(grammarInfoObject, "grammar");
 
-  fs.writeFileSync("lib/grammar.js", grammarJs);
+  fs.writeFileSync("./lib/grammar.js", grammarJs);
 }
 
 const filename = "grammar/mapcss.ne";
