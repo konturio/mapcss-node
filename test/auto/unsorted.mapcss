@@ -8,7 +8,7 @@ node {
 // @Test Canvas tag
 canvas {
     antialiasing: full;
-    fill-color: #000;
+    fill-color: #000000;
     fill-opacity: 0.2;
     fill-image: fills/grass.png;
 }
@@ -33,9 +33,9 @@ way {
     casing-linecap: square;
     casing-linejoin: bevel;
     extrude: 10;
-    extrude-edge-color: #fff;
+    extrude-edge-color: #ffffff;
     extrude-edge-opacity: 0.9;
-    extrude-face-color: #fff;
+    extrude-face-color: #ffffff;
     extrude-face-opacity: 0.4;
 }
 
@@ -68,11 +68,11 @@ node {
 // @Test Shield style
 way {
     shield-color: blue;
-    shield-color: #00f;
+    shield-color: #0000ff;
     shield-opacity: 0.5;
-    shield-frame-color: #fff;
+    shield-frame-color: #ffffff;
     shield-frame-width: 12;
-    shield-casing-color: #000;
+    shield-casing-color: #000000;
     shield-casing-width: 1;
     shield-text: ref;
     shield-image: fills/grass.png;
