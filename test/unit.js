@@ -90,7 +90,6 @@ async function runTest(suite, test, css) {
   try {
     const ast = parser.parse(css);
     const res = format(ast);
-    //console.log(res);
     return compareIgnoreSpace(test, expectation, res);
   } catch (e) {
     console.log(("ERROR: " + test).red)
@@ -100,15 +99,15 @@ async function runTest(suite, test, css) {
 }
 
 function compareIgnoreSpace(test, expected, actual) {
-  expected = expected
+  const a = expected
     .replace(/\s*/g, "")
     .trim();
 
-  actual = actual
+  const b = actual
   // Drop comments
     .replace(/\s*/g, "")
     .trim();
-  if (expected == actual) {
+  if (a == b) {
     console.log(("  OK: " + test).green)
     return true;
   }
@@ -120,8 +119,9 @@ function compareIgnoreSpace(test, expected, actual) {
     // grey for common parts
     var color = part.added ? 'green' :
       part.removed ? 'red' : 'grey';
-    console.log(part.value[color]);
+    process.stdout.write(part.value[color]);
   });
+  process.stdout.write("\n");
 
   return false;
 }
