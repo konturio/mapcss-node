@@ -16,4 +16,5 @@ way {
 // @Test Parentheses
 way {
     width: eval((1 + 2) * 3);
+    width: eval(6 * (1 + 2 * 2) * 3 + 2);
 }

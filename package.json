@@ -20,7 +20,7 @@
     "test": "node test/unit.js",
     "lint": "eslint --fix ./lib",
     "pretest": "scripts/compile.js",
-    "preinstall": "scripts/compile.js"
+    "prepack": "scripts/compile.js"
   },
   "author": "Miroff",
   "license": "UNLICENSED"
