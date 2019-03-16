@@ -22,5 +22,5 @@ way {
 
 // @Test nested functions
 way {
-    text: eval(tag(concat("name", ":ru")));
+    text: eval(tag(concat("", "name", ":ru")));
 }

@@ -27,5 +27,5 @@ func            -> term _ "(" (_ function_arg):? _ ")"
                                               {% ([func, _1, _2, args]) => ({type: 'function', func: func, args: args ? args[1] : null}) %}
 
 function_arg    -> AS                         {% ([arg]) => [arg] %}
-                 | function_arg _ "," _ function_arg
+                 | function_arg _ "," _ AS
                                               {% ([args, _1, _2, _3, arg]) => args.concat(arg) %}
