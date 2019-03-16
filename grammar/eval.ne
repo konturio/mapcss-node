@@ -26,5 +26,6 @@ float           -> int "." int                {% (d) => parseFloat(d[0] + d[1] +
 func            -> term _ "(" (_ function_arg):? _ ")"
                                               {% ([func, _1, _2, args]) => ({type: 'function', func: func, args: args ? args[1] : null}) %}
 
-function_arg    -> AS
+function_arg    -> AS                         {% ([arg]) => [arg] %}
                  | function_arg _ "," _ function_arg
+                                              {% ([args, _1, _2, _3, arg]) => args.concat(arg) %}

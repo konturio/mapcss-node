@@ -89,6 +89,7 @@ async function runTest(suite, test, css) {
 
   try {
     const ast = parser.parse(css);
+    //console.log(JSON.stringify(ast))
     const res = format(ast);
     return compareIgnoreSpace(test, expectation, res);
   } catch (e) {

@@ -18,3 +18,9 @@ way {
     width: eval((1 + 2) * 3);
     width: eval(6 * (1 + 2 * 2) * 3 + 2);
 }
+
+
+// @Test nested functions
+way {
+    text: eval(tag(concat("name", ":ru")));
+}
