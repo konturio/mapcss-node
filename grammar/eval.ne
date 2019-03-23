@@ -10,6 +10,7 @@ AS              -> AS _ "+" _ MD              {% ([a, _1, _2, _3, b]) => ({type:
 # Multiply and divide
 MD              -> MD _ "*" _ P               {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "*", left: a, right: b}) %}
                  | MD _ "/" _ P               {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "/", left: a, right: b}) %}
+                 | MD _ "%" _ P               {% ([a, _1, _2, _3, b]) => ({type: 'binary_op', op: "%", left: a, right: b}) %}
                  | P                          {% id %}
 
 # Parentheses

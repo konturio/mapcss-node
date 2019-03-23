@@ -25,3 +25,14 @@ way { //EOL comment
 way {
     icon: "path//not//comment";
 }
+
+// @Test Multiple comments
+line {
+  color: red;
+// Comment 1
+// Comment 2
+}
+// @Expected
+line {
+  color: red;
+}

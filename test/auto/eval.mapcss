@@ -11,6 +11,7 @@ way {
 // @Test Eval arithmetics
 way {
     width: eval(1 + 2 * 3 - 4 / 5);
+    casing-width: eval(5 % 3);
 }
 
 // @Test Parentheses
