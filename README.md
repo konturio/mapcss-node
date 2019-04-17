@@ -3,8 +3,8 @@
 [npm-url]: https://npmjs.org/package/mapcss
 [npm-version-image]: http://img.shields.io/npm/v/mapcss.svg?style=flat
 
-[license-image]: 	https://img.shields.io/npm/l/mapcss.svg
+[license-image]: 	https://img.shields.io/npm/l/mapcss.svg?style=flat
 [license-url]: LICENSE
 
 [travis-url]: http://travis-ci.org/kothic/mapcss-node
-[travis-image]: http://img.shields.io/travis/kothic/mapcss-node/develop.svg?style=flat
+[travis-image]: http://img.shields.io/travis/kothic/mapcss-node/master.svg?style=flat
