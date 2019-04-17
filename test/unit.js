@@ -32,6 +32,8 @@ async function run() {
         "Succeed: " + succeed.toString().green +
         (failed ? " Failed: " + failed.toString().red : '')
       );
+
+      process.exit(failed);
     });
 }
 
@@ -60,7 +62,7 @@ async function runSuite(file) {
   console.log(suite.yellow)
   return tasks.reduce((promise, task) =>
     promise.then((result) => task().then(Array.prototype.concat.bind(result))),
-  Promise.resolve([])
+    Promise.resolve([])
   ).then((results) => {
     const succeed = results.filter((x) => x).length;
     const failed = results.filter((x) => !x).length;

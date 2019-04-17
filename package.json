@@ -1,6 +1,6 @@
 {
   "name": "mapcss",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parser for MapCSS",
   "main": "lib/mapcss-parser",
   "keywords": [
@@ -35,7 +35,7 @@
     "prepack": "scripts/compile.js"
   },
   "author": "Miroff",
-  "license": "UNLICENSED",
+  "license": "BSD",
   "exclude": [
     "*/grammar/**",
     "**/test/**",
