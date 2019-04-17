@@ -127,7 +127,7 @@ spchar          -> [a-zA-Z0-9\-_:.,\\\/]
 # Comments
 mcomment        -> "/*" [^*]:* ("*":+ [^/*] [^*]:*):* "*":* "*/"
                                               {% () => null %}
-                 | "//" [^\n]:*               {% () => null %}
+                 | "//" [^\n]:* "\n"          {% () => null %}
 
 # Treat comments as a whitespace characters
 

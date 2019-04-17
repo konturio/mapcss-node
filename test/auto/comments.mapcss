@@ -26,7 +26,7 @@ way {
     icon: "path//not//comment";
 }
 
-// @Test Multiple comments
+// @Test Multiple single line comments
 line {
   color: red;
 // Comment 1
@@ -35,4 +35,20 @@ line {
 // @Expected
 line {
   color: red;
+}
+// @Test Commented code by single line comment
+line {
+//  width: 1;
+}
+// @Expected
+line {
+}
+// @Test Commented code by multiple lines comment
+line {
+  /*
+  color: red;
+  */
+}
+// @Expected
+line {
 }
