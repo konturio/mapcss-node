@@ -34,6 +34,9 @@
     "pretest": "scripts/compile.js",
     "prepack": "scripts/compile.js"
   },
+  "homepage": "https://github.com/kothic/mapcss-node",
+  "repository": "github:kothic/mapcss-node",
+  "bugs": "https://github.com/kothic/mapcss-node/issues",
   "author": "Miroff",
   "license": "MIT",
   "exclude": [
