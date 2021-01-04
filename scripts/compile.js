@@ -29,6 +29,6 @@ function compileFunc(filename, sourceCode) {
 }
 
 const filename = "grammar/mapcss.ne";
-const grammar = fs.readFileSync(filename);
+const grammar = fs.readFileSync(filename, {encoding: 'utf8'});
 
 compileFunc(filename, grammar);
